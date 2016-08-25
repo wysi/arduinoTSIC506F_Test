@@ -66,8 +66,16 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7); //works
 //it makes no sense to use the constructor with the PIN 13 (because it is on GND)
 
 //TSIC
-TSIC Sensor1(40, 41);    // Signalpin, VCCpin
-TSIC Sensor2(42, 43);    // Signalpin, VCCpin
+/*
+TSIC Sensor1(30, 31);    // Signalpin, VCCpin
+TSIC Sensor2(34, 35);    // Signalpin, VCCpin
+TSIC Sensor3(38, 39);    // Signalpin, VCCpin
+TSIC Sensor4(42, 43);    // Signalpin, VCCpin
+*/
+TSIC Sensor1(30);    // Signalpin, VCCpin
+TSIC Sensor2(34);    // Signalpin, VCCpin
+TSIC Sensor3(38);    // Signalpin, VCCpin
+TSIC Sensor4(42);    // Signalpin, VCCpin
 
 uint16_t temperature = 0;
 float Temperatur_C = 0;
@@ -75,6 +83,19 @@ float Temperatur_C = 0;
 uint16_t temperature2 = 0;
 float Temperatur_C2 = 0;
 
+uint16_t temperature3 = 0;
+float Temperatur_C3 = 0;
+
+uint16_t temperature4 = 0;
+float Temperatur_C4 = 0;
+
+//median
+float temp_c = 0;
+float temp_c2 = 0;
+float temp_c3 = 0;
+float temp_c4 = 0;
+
+int meas_count = 10;
 
 void setup(void) {
  
@@ -82,46 +103,86 @@ void setup(void) {
 	Serial.println(F("Arduino TSIC Test"));
 	
 	// set up the LCD's number of columns and rows: 
-  lcd.begin(16, 2);
-  lcd.clear();
+	lcd.begin(16, 2);
+	lcd.clear();
 	lcd.setCursor(0,0);
-	lcd.print("hello world");
+	lcd.print("Temp");
+	
+	pinMode(31,OUTPUT);
+	pinMode(35,OUTPUT);
+	pinMode(39,OUTPUT);
+	pinMode(43,OUTPUT);
+
+	
+	
 }
 
 void loop(void) {
 
-	if (Sensor1.getTemperture(&temperature)) {
-    Temperatur_C = Sensor1.calc_Celsius(&temperature);
-    //Serial.print("Temperature1: ");
-    //Serial.print(Temperatur_C);
-    //Serial.println(" C");
-  }
-	if (Sensor2.getTemperture(&temperature2)) {
-    Temperatur_C2 = Sensor2.calc_Celsius(&temperature2);
-    ///Serial.print("Temperature2: ");
-    //Serial.print(Temperatur_C2);
-    //Serial.println(" C");
+	digitalWrite(31,HIGH);
+	digitalWrite(35,HIGH);
+	digitalWrite(39,HIGH);
+	digitalWrite(43,HIGH);
+	
+	delay(85);
+	temp_c = 0;
+	temp_c2 = 0;
+	temp_c3 = 0;
+	temp_c4 = 0;
+	for(int i = 0; i < meas_count; i++){
+		if (Sensor1.getTemperture(&temperature) == 0) {
+			Temperatur_C = Sensor1.calc_CelsiusTsic506(&temperature);
+			temp_c += Temperatur_C;
+		}
+		if (Sensor2.getTemperture(&temperature2) == 0) {
+			Temperatur_C2 = Sensor2.calc_CelsiusTsic506(&temperature2);
+			temp_c2 += Temperatur_C2;
+		}
+		if (Sensor3.getTemperture(&temperature3) == 0) {
+			Temperatur_C3 = Sensor3.calc_CelsiusTsic506(&temperature3);
+			temp_c3 += Temperatur_C3;
+		}
+		if (Sensor4.getTemperture(&temperature4) == 0) {
+			Temperatur_C4 = Sensor4.calc_CelsiusTsic506(&temperature4);
+			temp_c4 += Temperatur_C4;
+		}
+	}
+	temp_c = temp_c / 10;
+	temp_c2 = temp_c2 / 10;
+	temp_c3 = temp_c3 / 10;
+	temp_c4 = temp_c4 / 10;
+	
+	digitalWrite(31,LOW);
+	digitalWrite(35,LOW);
+	digitalWrite(39,LOW);
+	digitalWrite(43,LOW);
+	
 		Serial.print("Temperaturen: ");
 		Serial.print(Temperatur_C);
 		Serial.print("  ");
 		Serial.print(Temperatur_C2);
-		Serial.println(" C");
+		Serial.print("  ");
+		Serial.print(Temperatur_C3);
+		Serial.print("  ");
+		Serial.print(Temperatur_C4);
+		Serial.println(" ");
 		
 		//LCD print:
 		lcd.setCursor(0,0);
-		lcd.print("T1 ");
+		//lcd.print("T1 ");
 		lcd.print(Temperatur_C);
-		lcd.print(" 2 ");
-		lcd.println(Temperatur_C2);
+		
+		lcd.setCursor(8,0);
+		//lcd.print("T2 ");
+		lcd.print(Temperatur_C2);
 		
 		lcd.setCursor(0,1);
-		lcd.print("T1 ");
-		lcd.print(Temperatur_C);
-		lcd.print(" 2 ");
-		lcd.println(Temperatur_C2);
+		//lcd.print("T3 ");
+		lcd.print(Temperatur_C3);
 		
-  }
-
-  delay(1000);    // wait 1 seconds
+		lcd.setCursor(8,1);
+		//lcd.print("T4 ");
+		lcd.print(Temperatur_C4);
+	delay(1000);    // wait 1 seconds
 }
 
