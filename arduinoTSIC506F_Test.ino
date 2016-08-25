@@ -125,32 +125,36 @@ void loop(void) {
 	digitalWrite(43,HIGH);
 	
 	delay(85);
+	/*
 	temp_c = 0;
 	temp_c2 = 0;
 	temp_c3 = 0;
 	temp_c4 = 0;
+	*/
 	for(int i = 0; i < meas_count; i++){
 		if (Sensor1.getTemperture(&temperature) == 0) {
 			Temperatur_C = Sensor1.calc_CelsiusTsic506(&temperature);
-			temp_c += Temperatur_C;
+			temp_c = (temp_c*9.0 + Temperatur_C)/10;
 		}
 		if (Sensor2.getTemperture(&temperature2) == 0) {
 			Temperatur_C2 = Sensor2.calc_CelsiusTsic506(&temperature2);
-			temp_c2 += Temperatur_C2;
+			temp_c2 += (temp_c2*9.0 + Temperatur_C2)/10;
 		}
 		if (Sensor3.getTemperture(&temperature3) == 0) {
 			Temperatur_C3 = Sensor3.calc_CelsiusTsic506(&temperature3);
-			temp_c3 += Temperatur_C3;
+			temp_c3 += (temp_c3*9.0 + Temperatur_C3)/10;
 		}
 		if (Sensor4.getTemperture(&temperature4) == 0) {
 			Temperatur_C4 = Sensor4.calc_CelsiusTsic506(&temperature4);
-			temp_c4 += Temperatur_C4;
+			temp_c4 += (temp_c4*9.0 + Temperatur_C4)/10;
 		}
 	}
+	/*
 	temp_c = temp_c / 10;
 	temp_c2 = temp_c2 / 10;
 	temp_c3 = temp_c3 / 10;
 	temp_c4 = temp_c4 / 10;
+	*/
 	
 	digitalWrite(31,LOW);
 	digitalWrite(35,LOW);
