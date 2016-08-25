@@ -113,6 +113,29 @@ void setup(void) {
 	pinMode(39,OUTPUT);
 	pinMode(43,OUTPUT);
 
+	digitalWrite(31,HIGH);
+	digitalWrite(35,HIGH);
+	digitalWrite(39,HIGH);
+	digitalWrite(43,HIGH);
+	
+	delay(85);
+	
+	if (Sensor1.getTemperture(&temperature) == 0) {
+		Temperatur_C = Sensor1.calc_CelsiusTsic506(&temperature);
+		temp_c = Temperatur_C;
+	}
+	if (Sensor2.getTemperture(&temperature2) == 0) {
+		Temperatur_C2 = Sensor2.calc_CelsiusTsic506(&temperature2);
+		temp_c2 = Temperatur_C;
+	}
+	if (Sensor3.getTemperture(&temperature3) == 0) {
+		Temperatur_C3 = Sensor3.calc_CelsiusTsic506(&temperature3);
+		temp_c3 = Temperatur_C;
+	}
+	if (Sensor4.getTemperture(&temperature4) == 0) {
+		Temperatur_C4 = Sensor4.calc_CelsiusTsic506(&temperature4);
+		temp_c4 = Temperatur_C;
+	}
 	
 	
 }
@@ -131,7 +154,7 @@ void loop(void) {
 	temp_c3 = 0;
 	temp_c4 = 0;
 	*/
-	for(int i = 0; i < meas_count; i++){
+	//for(int i = 0; i < meas_count; i++){
 		if (Sensor1.getTemperture(&temperature) == 0) {
 			Temperatur_C = Sensor1.calc_CelsiusTsic506(&temperature);
 			temp_c = (temp_c*9.0 + Temperatur_C)/10;
@@ -148,7 +171,7 @@ void loop(void) {
 			Temperatur_C4 = Sensor4.calc_CelsiusTsic506(&temperature4);
 			temp_c4 += (temp_c4*9.0 + Temperatur_C4)/10;
 		}
-	}
+	//}
 	/*
 	temp_c = temp_c / 10;
 	temp_c2 = temp_c2 / 10;
